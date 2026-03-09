@@ -305,10 +305,9 @@
     if (!email || !email.includes('@')) { document.getElementById('emailInput').focus(); return; }
     document.getElementById('emailForm').style.display = 'none';
     document.getElementById('successMsg').classList.add('show');
-    fetch('https://script.google.com/macros/s/AKfycbx3Os-ScHbI7vUqsWvQ8_G1QgdmIxoHDOJqjmBqoAtc9As2mvz4y0ewq-KlC563wp77/exec', {
-      method: 'POST',
-      body: JSON.stringify({ email: email }),
-      headers: { 'Content-Type': 'application/json' }
+    fetch(`https://script.google.com/macros/s/AKfycbx3Os-ScHbI7vUqsWvQ8_G1QgdmIxoHDOJqjmBqoAtc9As2mvz4y0ewq-KlC563wp77/exec?email=${encodeURIComponent(email)}`, {
+      method: 'GET',
+      mode: 'no-cors'
     }).catch(err => console.log('Webhook error:', err));
   }
   function handleSubmit2() {
@@ -316,10 +315,9 @@
     if (!email || !email.includes('@')) { document.getElementById('emailInput2').focus(); return; }
     document.getElementById('emailForm2').style.display = 'none';
     document.getElementById('successMsg2').classList.add('show');
-    fetch('https://script.google.com/macros/s/AKfycbx3Os-ScHbI7vUqsWvQ8_G1QgdmIxoHDOJqjmBqoAtc9As2mvz4y0ewq-KlC563wp77/exec', {
-      method: 'POST',
-      body: JSON.stringify({ email: email }),
-      headers: { 'Content-Type': 'application/json' }
+    fetch(`https://script.google.com/macros/s/AKfycbx3Os-ScHbI7vUqsWvQ8_G1QgdmIxoHDOJqjmBqoAtc9As2mvz4y0ewq-KlC563wp77/exec?email=${encodeURIComponent(email)}`, {
+      method: 'GET',
+      mode: 'no-cors'
     }).catch(err => console.log('Webhook error:', err));
   }
   document.getElementById('emailInput').addEventListener('keydown', e => { if(e.key==='Enter') handleSubmit(); });
