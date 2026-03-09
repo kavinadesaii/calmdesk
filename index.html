@@ -79,9 +79,22 @@
   .email-form input::placeholder{color:var(--warm-grey);font-style:italic;}
   .email-form button{background:linear-gradient(135deg,var(--deep-pink),var(--coral));color:white;border:none;border-radius:999px;padding:11px 22px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.82rem;cursor:pointer;white-space:nowrap;box-shadow:0 4px 14px rgba(232,130,155,.3);transition:transform .2s,filter .2s;}
   .email-form button:hover{transform:translateY(-1px);filter:brightness(1.05);}
+  @keyframes subtlePulse{0%,100%{box-shadow:0 4px 14px rgba(232,130,155,.3)}50%{box-shadow:0 4px 24px rgba(232,130,155,.55)}}
+  .email-form button{animation:subtlePulse 2.5s ease-in-out infinite;}
   .cta-sub{font-size:.78rem;color:var(--deep-pink);font-weight:600;text-align:center;font-family:'Nunito',sans-serif;}
-  .success-msg{display:none;align-items:center;gap:8px;background:rgba(109,196,168,.12);border:1.5px solid var(--deep-mint);border-radius:999px;padding:12px 24px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;color:var(--deep-mint);margin-bottom:12px;}
-  .success-msg.show{display:flex;}
+  @keyframes successPop{0%{transform:scale(.8) translateY(10px);opacity:0}60%{transform:scale(1.04) translateY(-2px)}100%{transform:scale(1) translateY(0);opacity:1}}
+  @keyframes checkDraw{0%{stroke-dashoffset:40}100%{stroke-dashoffset:0}}
+  @keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}
+  .success-msg{display:none;flex-direction:column;align-items:center;gap:6px;margin-bottom:12px;}
+  .success-msg.show{display:flex;animation:successPop .5s cubic-bezier(.34,1.56,.64,1) both;}
+  .success-inner{display:flex;align-items:center;gap:10px;background:white;border:2px solid var(--deep-mint);border-radius:20px;padding:14px 28px;box-shadow:0 8px 30px rgba(109,196,168,.18);}
+  .success-check{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--deep-mint),#4db896);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(109,196,168,.3);}
+  .success-check svg{width:14px;height:14px;}
+  .success-check svg path{stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;fill:none;stroke-dasharray:40;stroke-dashoffset:40;animation:checkDraw .4s ease .3s both;}
+  .success-text{font-family:'DM Sans',sans-serif;font-weight:600;font-size:.92rem;color:var(--ink);}
+  .success-sub{font-family:'DM Sans',sans-serif;font-size:.74rem;color:var(--soft-ink);font-style:italic;}
+  .confetti-wrap{position:relative;height:0;width:100%;overflow:visible;}
+  .confetti-dot{position:absolute;width:6px;height:6px;border-radius:50%;animation:confettiFall .8s ease both;}
 
   /* MARQUEE */
   .marquee-strip{overflow:hidden;padding:9px 0;white-space:nowrap;border-top:1.5px solid rgba(232,130,155,.2);border-bottom:1.5px solid rgba(232,130,155,.2);}
@@ -190,7 +203,16 @@
       <input type="email" id="emailInput" placeholder="your@email.com" />
       <button onclick="handleSubmit()">Get Early Access</button>
     </div>
-    <div class="success-msg" id="successMsg">✓ You're on the list! We'll be in touch 🌸</div>
+    <div class="success-msg" id="successMsg">
+      <div class="confetti-wrap" id="confetti1"></div>
+      <div class="success-inner">
+        <div class="success-check"><svg viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 3"/></svg></div>
+        <div>
+          <p class="success-text">You're on the list!</p>
+          <p class="success-sub">We'll be in touch when it's ready 🌸</p>
+        </div>
+      </div>
+    </div>
     <p class="cta-sub">Be among the first 200 elite girlies to try Calmdesk — no spam, ever.</p>
   </div>
 </section>
@@ -286,7 +308,16 @@
       <input type="email" id="emailInput2" placeholder="your@email.com" />
       <button onclick="handleSubmit2()">Get Early Access</button>
     </div>
-    <div class="success-msg" id="successMsg2">✓ You're on the list! We'll be in touch 🌸</div>
+    <div class="success-msg" id="successMsg2">
+      <div class="confetti-wrap" id="confetti2"></div>
+      <div class="success-inner">
+        <div class="success-check"><svg viewBox="0 0 14 14"><path d="M2 7l3.5 3.5L12 3"/></svg></div>
+        <div>
+          <p class="success-text">You're on the list!</p>
+          <p class="success-sub">We'll be in touch when it's ready 🌸</p>
+        </div>
+      </div>
+    </div>
     <p class="cta-sub">Be among the first 200 elite girlies to try Calmdesk — no spam, ever.</p>
   </div>
 </section>
@@ -300,11 +331,32 @@
 <footer class="linen">✦ Calmdesk · built with care · coming soon ✦</footer>
 
 <script>
+  // Confetti burst
+  function spawnConfetti(containerId) {
+    const wrap = document.getElementById(containerId);
+    if (!wrap) return;
+    const colors = ['#f7b4d0','#e8829b','#6dc4a8','#f4a06a','#d8c8f0','#fde68a'];
+    wrap.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'confetti-dot';
+      dot.style.cssText = `
+        left: ${20 + Math.random() * 60}%;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        animation-delay: ${Math.random() * 0.3}s;
+        animation-duration: ${0.6 + Math.random() * 0.5}s;
+        width: ${4 + Math.random() * 5}px;
+        height: ${4 + Math.random() * 5}px;
+      `;
+      wrap.appendChild(dot);
+    }
+  }
+
   function handleSubmit() {
     const email = document.getElementById('emailInput').value;
     if (!email || !email.includes('@')) { document.getElementById('emailInput').focus(); return; }
     document.getElementById('emailForm').style.display = 'none';
-    document.getElementById('successMsg').classList.add('show');
+    document.getElementById('successMsg').classList.add('show'); spawnConfetti('confetti1');
     fetch(`https://script.google.com/macros/s/AKfycbx3Os-ScHbI7vUqsWvQ8_G1QgdmIxoHDOJqjmBqoAtc9As2mvz4y0ewq-KlC563wp77/exec?email=${encodeURIComponent(email)}`, {
       method: 'GET',
       mode: 'no-cors'
@@ -314,7 +366,7 @@
     const email = document.getElementById('emailInput2').value;
     if (!email || !email.includes('@')) { document.getElementById('emailInput2').focus(); return; }
     document.getElementById('emailForm2').style.display = 'none';
-    document.getElementById('successMsg2').classList.add('show');
+    document.getElementById('successMsg2').classList.add('show'); spawnConfetti('confetti2');
     fetch(`https://script.google.com/macros/s/AKfycbx3Os-ScHbI7vUqsWvQ8_G1QgdmIxoHDOJqjmBqoAtc9As2mvz4y0ewq-KlC563wp77/exec?email=${encodeURIComponent(email)}`, {
       method: 'GET',
       mode: 'no-cors'
